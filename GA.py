@@ -50,6 +50,8 @@ class GA(object):
 		pass
 
 	def evaluation(self):
+		menor = 1
+		menorsolucao = 0
 		for i in range(0,self.populacao):
 			solucao = dict()
 			area = 0
@@ -63,13 +65,12 @@ class GA(object):
 				alturapeca = self.pecas[self.geracao[i][x]][1]
 				largurapeca = self.pecas[self.geracao[i][x]][0]
 				for z in range(0, quantidadepeca):
-					
+
 					if area + largurapeca > largura:
 						area = 0
 						indice+=1
 						altura = altura - maioraltura
-						maioraltura = 0
-					
+						maioraltura = 0	
 
 					if area + largurapeca <= largura and altura >= 0 and alturapeca < altura:
 						area+=largurapeca
@@ -79,12 +80,17 @@ class GA(object):
 							solucao[indice] = [self.pecas[self.geracao[i][x]]]
 						if self.pecas[self.geracao[i][x]][1] > maioraltura:
 							maioraltura = self.pecas[self.geracao[i][x]][1]
-				pass
+				
 			areasolucao = 0
 			for s in solucao.values():
 				for k in s:
 					areasolucao += k[0]*k[1]
-				pass
-			pass
-			print "Perca: "+str(float((self.placa[1]*self.placa[0]) - areasolucao) / float(self.placa[1]*self.placa[0]))
+	
+			perca = float((self.placa[1]*self.placa[0]) - areasolucao) / float(self.placa[1]*self.placa[0])
+			if perca  < menor:
+				menor = perca
+				menorsolucao = solucao
+
+		print menor
+		print menorsolucao
 		pass

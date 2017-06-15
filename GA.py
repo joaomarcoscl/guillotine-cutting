@@ -6,6 +6,7 @@ class GA(object):
 		self.geracao = []
 		self.populacao = populacao
 		self.pecas = []
+		self.pesos = []
 		self.instancias = instancias
 		self.placa = placa
 		self.mutation = mutation
@@ -30,10 +31,14 @@ class GA(object):
 
 	def generate(self):
 		for i in range(0,self.populacao):
-		    pop = random.sample(range(0, len(self.pecas)), len(self.pecas)) 
+		    pop = random.sample(range(0, len(self.pecas)), len(self.pecas))
+		    peso = []
+		    for x in pop:
+		    	peso.append(random.sample(range(0, self.pecas[x][2]+1), 1)[0])
+		    	pass
+		    self.pesos.append(peso)
 		    self.geracao.append(pop)
 		pass
-		return np.matrix(self.geracao)
 
 	def mutation(self):
 		pass
@@ -45,4 +50,36 @@ class GA(object):
 		pass
 
 	def evaluation(self):
+		for i in range(0,self.populacao):
+			solucao = dict()
+			area = 0
+			indice = 0
+			maioraltura = 0
+			altura = self.placa[1]
+			largura = self.placa[0]
+			
+			for x in range(0, len(self.geracao[i])):
+				quantidadepeca = self.pesos[i][x]
+				alturapeca = self.pecas[self.geracao[i][x]][1]
+				largurapeca = self.pecas[self.geracao[i][x]][0]
+				for z in range(0, quantidadepeca):
+					
+					if area + largurapeca > largura:
+						area = 0
+						indice+=1
+						altura = altura - maioraltura
+						maioraltura = 0
+					
+
+					if area + largurapeca <= largura and altura >= 0 and alturapeca < altura:
+						area+=largurapeca
+						if indice in solucao:
+							solucao[indice].append(self.pecas[self.geracao[i][x]])
+						else:
+							solucao[indice] = [self.pecas[self.geracao[i][x]]]
+						if self.pecas[self.geracao[i][x]][1] > maioraltura:
+							maioraltura = self.pecas[self.geracao[i][x]][1]
+				pass
+			print solucao
+			pass
 		pass

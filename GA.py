@@ -80,6 +80,11 @@ class GA(object):
 						if self.pecas[self.geracao[i][x]][1] > maioraltura:
 							maioraltura = self.pecas[self.geracao[i][x]][1]
 				pass
-			print solucao
+			areasolucao = 0
+			for s in solucao.values():
+				for k in s:
+					areasolucao += k[0]*k[1]
+				pass
 			pass
+			print "Perca: "+str(float((self.placa[1]*self.placa[0]) - areasolucao) / float(self.placa[1]*self.placa[0]))
 		pass

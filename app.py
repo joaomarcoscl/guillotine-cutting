@@ -22,3 +22,8 @@ ga.duplique()
 ga.preprocessing()
 ga.generate()
 ga.evaluation()
+while True:
+    ga.roulette()
+    #ga.crossover()
+    #ga.mutation()
+    ga.evaluation()

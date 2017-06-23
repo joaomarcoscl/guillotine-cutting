@@ -1,29 +1,37 @@
 from GA import GA
+from instances import Instances
+from graphs import Graphs
+import time
 
-populacao = 100
-mutation = 0.1
-crossover = 0.25
-instancias = [
-    [167,184],
-    [114,118],
-    [167,152],
-    [83,140],
-    [70,86],
-    [143,166],
-    [120,160],
-    [66,148],
-    [87,141],
-    [69,165]
-]
-placa = [250,250]
+instances = Instances()
+instances.process()
+
+inicio =  time.time()
+execucao = 400
+instancia = 0
+populacao = 200
+mutation = 0.01
+crossover = 0.4
+
+instancias = instances.instances[instancia]['pecas']
+placa = instances.instances[instancia]['placa']
 
 ga = GA(populacao, instancias, placa, mutation, crossover)
 ga.duplique()
+#ga.pecas = instancias
 ga.preprocessing()
 ga.generate()
-ga.evaluation()
-while True:
-    ga.roulette()
-    #ga.crossover()
-    #ga.mutation()
+
+while ga.execucao <=execucao:
     ga.evaluation()
+    ga.roulette()
+    #ga.tournament()
+    ga.crossover()
+    ga.mutation()
+
+fim = time.time()
+print fim - inicio
+print ga.solucao
+
+graphs = Graphs(ga, placa)
+graphs.plotgraphs()

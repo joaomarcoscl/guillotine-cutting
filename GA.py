@@ -3,6 +3,7 @@ import random
 import operator
 
 class GA(object):
+	
 	def __init__(self, populacao, instancias, placa, mutation, crossover):
 		self.geracao = []
 		self.populacao = populacao
@@ -10,10 +11,11 @@ class GA(object):
 		self.pesos = []
 		self.instancias = instancias
 		self.placa = placa
-		self.mutation = mutation
-		self.crossover = crossover
+		self.ratemutation = mutation
+		self.ratecrossover = crossover
+		self.percas = []
 		self.solucao = {'menor': 1}
-		pass
+		self.execucao = 0
 
 	def duplique(self):
 		for i in self.instancias:
@@ -44,9 +46,30 @@ class GA(object):
 		pass
 
 	def mutation(self):
+		mutations =  random.sample(range(0, self.populacao), int(self.ratemutation * self.populacao))
+		for i in range(0, len(mutations), 2):
+			corte = random.randint(0,len(self.pecas)-1)
+			peca = random.randint(0,len(self.pecas)-1)
+			self.geracao[i][corte] = peca
+			self.pesos[i][peca] = random.randint(0,self.pecas[corte][2])
+			pass
 		pass
 
 	def crossover(self):
+		crossovers =  random.sample(range(0, self.populacao), int(self.ratecrossover * self.populacao))
+		for i in range(0, len(crossovers), 2):
+			corte = random.randint(1, int(len(self.pecas)*0.3))
+			pai =  crossovers[i]
+			mae =  crossovers[i+1]
+			filho1 = self.geracao[pai][0:corte] + self.geracao[mae][corte:len(self.pecas)]+[0]
+			filho2 = self.geracao[mae][0:corte] + self.geracao[pai][corte:len(self.pecas)]+[0]
+			pesofilho1 = self.pesos[pai][0:corte] + self.pesos[mae][corte:len(self.pecas)]
+			pesofilho2 = self.pesos[mae][0:corte] + self.pesos[pai][corte:len(self.pecas)]
+			self.geracao[pai] = filho1
+			self.geracao[mae] = filho2
+			self.pesos[pai] = pesofilho1
+			self.pesos[mae] = pesofilho2
+			pass
 		pass
 
 	def roulette(self):
@@ -72,14 +95,33 @@ class GA(object):
 				anterior = tabelaprobabalidade[j]
 		self.geracao = newgeracao
 	
+	def tournament(self):
+		newgeracao = []
+		limite = 0.85
+		for i in range(0, self.populacao):
+			sorteio = random.sample(range(0, self.populacao), 2)
+			rand = random.random()
+			if self.geracao[sorteio[0]][len(self.pecas)] < self.geracao[sorteio[1]][len(self.pecas)]:
+				melhor = self.geracao[sorteio[0]]
+				pior = self.geracao[sorteio[1]]
+			else:
+				melhor = self.geracao[sorteio[1]]
+				pior = self.geracao[sorteio[0]]
+			if rand <= limite:
+				newgeracao.append(melhor)
+			else:
+				newgeracao.append(pior)
+		self.geracao = newgeracao
+
 	def evaluation(self):
+		menorgeracao = self.solucao['menor']
 		for i in range(0,self.populacao):
 			solucao = dict()
-			area = 0
+			lagurasolucao = 0
 			indice = 0
 			maioraltura = 0
-			altura = self.placa[1]
-			largura = self.placa[0]
+			alturaplaca = self.placa[1]
+			larguraplaca = self.placa[0]
 			
 			for x in range(0, len(self.geracao[i])-1):
 				quantidadepeca = self.pesos[i][x]
@@ -87,15 +129,14 @@ class GA(object):
 				largurapeca = self.pecas[self.geracao[i][x]][0]
 				
 				for z in range(0, quantidadepeca):
-
-					if area + largurapeca > largura:
-						area = 0
+					if lagurasolucao + largurapeca > larguraplaca:
+						lagurasolucao = 0
 						indice+=1
-						altura = altura - maioraltura
+						alturaplaca = alturaplaca - maioraltura
 						maioraltura = 0	
 
-					if area + largurapeca <= largura and altura >= 0 and alturapeca < altura:
-						area+=largurapeca
+					if lagurasolucao + largurapeca <= larguraplaca and alturaplaca >= 0 and alturapeca < alturaplaca:
+						lagurasolucao+=largurapeca
 						if indice in solucao:
 							solucao[indice].append(self.pecas[self.geracao[i][x]])
 						else:
@@ -107,14 +148,18 @@ class GA(object):
 			for s in solucao.values():
 				for k in s:
 					areasolucao += k[0]*k[1]
-	
 			perca = float((self.placa[1]*self.placa[0]) - areasolucao) / float(self.placa[1]*self.placa[0])
+
 			self.geracao[i][len(self.geracao[i])-1] = perca
-			if perca  < self.solucao['menor']:
+			if perca < self.solucao['menor']:
 				self.solucao['menor'] = perca
 				self.solucao['pecas'] = solucao
-				self.solucao['cromossomo'] = self.geracao[i]
+				self.solucao['cromossomo'] = self.geracao[i][0:len(self.pecas)]
 				self.solucao['peso'] = self.pesos[i]
-		#self.geracao = sorted(self.geracao, key=operator.itemgetter(len(self.pecas)), reverse = True)
-		print self.solucao['menor']
+		self.percas.append(self.solucao['menor'])
+		
+		if menorgeracao == self.solucao['menor']:
+			self.execucao +=1
+		else:
+			self.execucao = 0
 		pass

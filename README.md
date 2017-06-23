@@ -2,5 +2,5 @@
 Implementation of the guillotine cutting problem using GA. 
 
 # Requeriments
-*Numpy
-*Matplotlib
+* Numpy
+* Matplotlib

@@ -4,12 +4,14 @@ from matplotlib.path import Path
 import matplotlib.patches as patches
 
 class Graphs(object):
-	def __init__(self, ga, placa):
+	def __init__(self, ga, placa, image):
 		self.ga = ga
 		self.placa = placa
+		self.image = image+'.png'
 
 	def plotgraphs(self):
 		plt.plot(self.ga.percas)
+		plt.savefig('images/grafico-'+self.image)
 		altura = 0
 		fig = plt.figure()
 		ax = fig.add_subplot(111)
@@ -41,4 +43,6 @@ class Graphs(object):
 		    altura += maioraltura
 		ax.set_xlim(0,self.placa[0])
 		ax.set_ylim(0,self.placa[1])
-		plt.show()
+		plt.savefig('images/pecas-'+self.image)
+		plt.clf()
+		plt.cla()

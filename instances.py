@@ -1,16 +1,6 @@
 class Instances(object):
 	def __init__(self):
-		self.files = [
-			'cut1',
-			'cut2',
-			'cut5',
-			'cut7',
-			'cut9',
-			'cut12',
-			'cut13',
-			'cut14',
-			'cut17',
-		]
+		self.files = []
 		self.instances = dict()
 	def process(self):
 		for i in range(0, len(self.files)):
